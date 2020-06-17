@@ -1,5 +1,6 @@
 tmp/
 .clasp.json
+creds.json
 node_modules/
 .clasprc.json
 help_dialog.html

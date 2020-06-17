@@ -1,20 +1,28 @@
 import { DefaultSettings } from "./settings/default_settings";
 import { RegionsList } from "./regions_list";
 import { AwsDataLoader } from "./aws_data_loader";
+import { GcpDataLoader } from "./gcp_data_loader";
 
 
 export class Context {
     constructor(readonly spreadsheetApp: GoogleAppsScript.Spreadsheet.SpreadsheetApp,
          readonly defaultSettings: DefaultSettings,
          readonly regionsList: RegionsList,
-         readonly awsDataLoader: AwsDataLoader) {
+         readonly awsDataLoader: AwsDataLoader,
+         readonly gcpDataLoader: GcpDataLoader) {
     }
 
     static Builder = class {
+        private gcpDataLoader: GcpDataLoader
         private awsDataLoader: AwsDataLoader
         private spreadsheetApp: GoogleAppsScript.Spreadsheet.SpreadsheetApp
         private regionsList: RegionsList
 
+        withGcpDataLoader(gcpDataLoader: GcpDataLoader): this {
+            this.gcpDataLoader = gcpDataLoader
+            return this
+        }
+        
         withAwsDataLoader(awsDataLoader: AwsDataLoader): this {
             this.awsDataLoader = awsDataLoader
             return this
@@ -33,7 +41,8 @@ export class Context {
         build(): Context {
             return new Context(this.spreadsheetApp,
                 new DefaultSettings(this.regionsList),
-                this.regionsList, this.awsDataLoader)
+                this.regionsList, this.awsDataLoader, 
+                this.gcpDataLoader)
         }
     }
 }
