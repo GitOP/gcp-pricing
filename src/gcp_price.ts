@@ -35,12 +35,13 @@ export class GCPPrice {
         let pricePath = null
         let inst = null
 
+        let serviceId = null
         if (this.isReserved()) {
             // pricePath = Utilities.formatString('-%s-CUD-%s-%s-YEAR-',this.instance.getInstanceSeries(),this.setting(SettingKeys.PurchaseTerm))
         } else {
-            inst = ctxt().gcpServiceList.services[instance.getServiceName()].region
-            Logger.log(inst);
-            
+            serviceId = instance.getServiceName() + "-VMIMAGE-" + instance.getInstanceType()
+            inst = ctxt().gcpServiceList.services[serviceId][region]
+            Logger.log(inst);            
         }
         // insts = this.filterReserved(prices)
         // insts = this.filterOnDemand(prices)

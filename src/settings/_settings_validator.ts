@@ -12,10 +12,10 @@ export abstract class SettingsValidator {
                 return [false, `Missing required option: ${opt}`]
             }
 
-            let setting = ctxt().defaultSettings.getSetting(opt)
-            if (!setting.valid(x)) {
-                return [false, `Invalid setting of '${x}' for: ${opt}`]
-            }
+            // let setting = ctxt().defaultSettings.getSetting(opt)
+            // if (!setting.valid(x)) {
+            //     return [false, `Invalid setting of '${x}' for: ${opt}`]
+            // }
         }
 
         return [true, null]

@@ -3,14 +3,14 @@ import { GCPPrice } from "../gcp_price";
 import { InvocationSettings } from "../settings/invocation_settings";
 import { _initContext } from "../context";
 import { SettingKeys } from "../settings/setting_keys";
-import { EC2SettingsValidator } from "../settings/ec2_settings_validator";
+import { GCPSettingsValidator } from "../settings/gcp_settings_validator";
 
 export function _gcp(settings: InvocationSettings, instanceType: string)  {
     if (!instanceType) {
         throw "Instance type is not set"
     }
 
-    let [ret, msg] = new EC2SettingsValidator(settings).validate()
+    let [ret, msg] = new GCPSettingsValidator(settings).validate()
     if (!ret) {
         throw msg
     }
