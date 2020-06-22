@@ -2,7 +2,7 @@ import { DefaultSettings } from "./settings/default_settings";
 import { RegionsList } from "./regions_list";
 import { AwsDataLoader } from "./aws_data_loader";
 import { GcpDataLoader } from "./gcp_data_loader";
-import { GcpPriceList } from "./gcp_price_list";
+import { GcpServiceList } from "./gcp_service_list";
 
 
 export class Context {
@@ -10,7 +10,7 @@ export class Context {
          readonly defaultSettings: DefaultSettings,
          readonly regionsList: RegionsList,
          readonly awsDataLoader: AwsDataLoader,
-         readonly gcpPriceList: GcpPriceList,
+         readonly gcpServiceList: GcpServiceList,
          readonly gcpDataLoader: GcpDataLoader) {
     }
 
@@ -19,7 +19,7 @@ export class Context {
         private awsDataLoader: AwsDataLoader
         private spreadsheetApp: GoogleAppsScript.Spreadsheet.SpreadsheetApp
         private regionsList: RegionsList
-        private gcpPriceList: GcpPriceList
+        private gcpServiceList: GcpServiceList
 
         withGcpDataLoader(gcpDataLoader: GcpDataLoader): this {
             this.gcpDataLoader = gcpDataLoader
@@ -36,8 +36,8 @@ export class Context {
             return this
         }
 
-        withGcpPriceList(gcpPriceList: GcpPriceList): this {
-            this.gcpPriceList = gcpPriceList
+        withGcpServiceList(gcpServiceList: GcpServiceList): this {
+            this.gcpServiceList = gcpServiceList
             return this
         }
 
@@ -49,7 +49,7 @@ export class Context {
         build(): Context {
             return new Context(this.spreadsheetApp,
                 new DefaultSettings(this.regionsList),
-                this.regionsList, this.awsDataLoader, this.gcpPriceList, this.gcpDataLoader)
+                this.regionsList, this.awsDataLoader, this.gcpServiceList, this.gcpDataLoader)
         }
     }
 }
@@ -69,12 +69,13 @@ export function _initContext(app = SpreadsheetApp) {
 
     let context = new Context.Builder()
         .withGcpDataLoader(gcpLoader)
-        .withGcpPriceList(GcpPriceList.load(gcpLoader))
+        .withGcpServiceList(GcpServiceList.load(gcpLoader))
         .withAwsDataLoader(awsLoader)
         .withSpreadsheetApp(app)
         .withRegionsList(RegionsList.load(awsLoader))
         .build()
     _setContext(context)
+    
 }
 
 export function _setContext(context: Context) {
@@ -84,3 +85,9 @@ export function _setContext(context: Context) {
 export function ctxt(): Context {
     return _mainContext
 }
+
+// export function filterOnDemand(prices: any) {
+//     return prices.filter(price => {
+//         return price.attributes['CP-COMPUTEENGINE-VMIMAGE-N1-STANDARD-8'] === "us-central1"
+//     })
+// }

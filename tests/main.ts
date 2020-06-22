@@ -1,6 +1,8 @@
 import { TestRunner } from "./_framework/test_runner";
 import { EC2FunctionTestSuite } from "./functions/ec2_test";
+import { GCPFunctionTestSuite } from "./functions/gcp_test";
 import { EC2InstanceTestSuite } from "./ec2_instance_test";
+import { GCPInstanceTestSuite } from "./gcp_instance_test";
 import { PriceConverterTestSuite } from "./price_converter_test";
 import { SettingsTestSuite } from "./settings_tests";
 import { _setContext, _initContext, ctxt } from "../src/context";
@@ -30,7 +32,9 @@ function runAllTests(): string {
         })
 
         new EC2FunctionTestSuite().test(t)
+        new GCPFunctionTestSuite().test(t)
         new EC2InstanceTestSuite().test(t)
+        new GCPInstanceTestSuite().test(t);
         new EBSFunctionTestSuite().test(t)
         new RDSFunctionTestSuite().test(t)
         new RDSStorageFunctionTestSuite().test(t)
