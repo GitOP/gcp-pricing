@@ -21,7 +21,7 @@ export function _gcp(settings: InvocationSettings, instanceType: string)  {
 }
 
 export function _gcp_full(instanceType: string, region: string, purchaseType: string, platform: string,
-    offeringClass?: string, purchaseTerm?: string | number, paymentOption?: string) {
+    purchaseTerm?: string | number) {
     _initContext()
 
     if (!instanceType) {
@@ -46,21 +46,11 @@ export function _gcp_full(instanceType: string, region: string, purchaseType: st
     settingsMap[SettingKeys.Platform] = platform
 
     if (purchaseType === "reserved") {
-        if (!offeringClass) {
-            throw "Offering class is not set"
-        }
 
         if (!purchaseTerm) {
             throw "Purchase term is not set"
         }
-
-        if (!paymentOption) {
-            throw "Payment option is not set"
-        }
-
-        settingsMap[SettingKeys.OfferingClass] = offeringClass
         settingsMap[SettingKeys.PurchaseTerm] = purchaseTerm
-        settingsMap[SettingKeys.PaymentOption] = paymentOption
     }
 
     let settings = InvocationSettings.loadFromMap(settingsMap)

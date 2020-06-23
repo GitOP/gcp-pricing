@@ -13,16 +13,29 @@ export class GCPInstance {
         this.serviceName='CP-COMPUTEENGINE'
         let s = instType.toLowerCase().split("-")
 
-        if (s.length != 3) {
-            throw `Invalid instance type: ${instType}`
-        }
-
         this.instSeries = s[0]
+        if (this.instSeries != "n1") {
+            throw `Invalid instance series: ${this.instSeries}`
+        }
+        
+        this.instSize = s[1]+"-"+s[2]
         this.instSubType = s[1]
-        this.instSize = s[2]
 
-        let fullServiceName = this.gcpServiceName()
-        let specs = this.gcpSetInstanceSpecs(fullServiceName, ctxt().gcpServiceList.services)
+        if(this.instSubType == "custom"){
+            if (s.length != 4) {
+                throw `Invalid instance type: ${instType}`
+            }
+            this.setCores(s[2])
+            this.setMem(s[3].slice(0,-3))
+        }
+        else {
+            if (s.length != 3) {
+                throw `Invalid instance type: ${instType}`
+            }
+            let fullServiceName = this.gcpServiceName()
+            let specs = this.gcpSetInstanceSpecs(fullServiceName, ctxt().gcpServiceList.services)
+
+        } 
     }
 
     private gcpServiceName(): string {
@@ -42,15 +55,15 @@ export class GCPInstance {
     }
 
     getServiceName(): string {
-        return this.serviceName
+        return this.serviceName.toUpperCase()
     }
 
     getInstanceType(): string {
-        return (this.instSeries + "-" + this.instSubType + "-" + this.instSize).toUpperCase();
+        return (this.instSeries + "-" + this.instSize).toUpperCase();
     }
 
     getInstanceSeries(): string{
-        return this.instSeries
+        return this.instSeries.toUpperCase()
     }
 
     getInstanceSize(): string{
@@ -65,11 +78,11 @@ export class GCPInstance {
         return this.memory
     }
 
-    setCores(cores: number){
-        this.cores = cores.toString()
+    setCores(cores: string){
+        this.cores = cores
     }
 
-    setMem(memory: number){
-        this.memory = memory.toString()
+    setMem(memory: string){
+        this.memory = memory
     }
 }

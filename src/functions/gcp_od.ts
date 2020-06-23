@@ -7,9 +7,9 @@ import { _gcp, _gcp_full } from "./gcp";
 /**
  * Returns the on-demand pricing for given instance type using the provided settings.
  *
- * @param {A2:B7} settingsRange Two-column range of default EC2 instance settings
- * @param {"m5.xlarge"} instanceType Instance type, eg. "m5.xlarge"
- * @param {"us-east-2"} region Override region setting for this call (optional)
+ * @param {A2:B7} settingsRange Two-column range of default GCP instance settings
+ * @param {"n1-standard-2"} instanceType Instance type, eg. "n1-standard-2"
+ * @param {"us-east1"} region Override region setting for this call (optional)
  * @returns price
  * @customfunction
  */
@@ -34,8 +34,8 @@ export function GCP(settingsRange: Array<Array<string>>, instanceType: string, r
 /**
  * Returns the on-demand pricing for given instance type.
  *
- * @param {"m5.xlarge"} instanceType Instance type, eg. "m5.xlarge"
- * @param {"us-east-2"} region
+ * @param {"n1-standard-2"} instanceType Instance type, eg. "n1-standard-2"
+ * @param {"us-east1"} region
  * @param {"linux"} platform
  * @returns price
  * @customfunction
@@ -47,8 +47,8 @@ export function GCP_OD(instanceType: string, region: string, platform: string) {
 /**
  * Returns the on-demand pricing for given instance type, using Linux.
  *
- * @param {"m5.xlarge"} instanceType Instance type, eg. "m5.xlarge"
- * @param {"us-east-2"} region
+ * @param {"n1-standard-2"} instanceType Instance type, eg. "n1-standard-2"
+ * @param {"us-east1"} region
  * @returns price
  * @customfunction
  */

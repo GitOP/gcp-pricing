@@ -67,15 +67,15 @@ export class GCPFunctionTestSuite extends TestSuite {
         //          GCP(this.settings("ca-central-1", "linux", "ondemand", "standard", 1, "all_upfront"), "m5.xlarge"))
         // })
 
-        // t.describe("EC2 RI", () => {
-        //     t.areClose(0.116447, EC2(this.linuxRi('us-east-1', 'standard', 1, 'partial_upfront'), "m5.xlarge"), 0.00001)
-        //     t.areClose(0.134123, EC2(this.linuxRi('us-east-1', 'convertible', 1, 'partial_upfront'), "m5.xlarge"), 0.00001)
-        //     t.areClose(0.123, EC2(this.linuxRi('us-east-1', 'standard', 1, 'no_upfront'), "m5.xlarge"), 0.00001)
-        //     t.areClose(0.114498, EC2(this.linuxRi('us-east-1', 'standard', 1, 'all_upfront'), "m5.xlarge"), 0.00001)
-        //     t.areClose(0.073706, EC2(this.linuxRi('us-east-1', 'standard', 3, 'all_upfront'), "m5.xlarge"), 0.00001)
+        t.describe("GCP RI", () => {
+            t.areClose(0.239383, GCP(this.linuxRi('us-central1', 'standard', 1, 'partial_upfront'), "n1-standard-8"), 0.00001)
+            t.areClose(0.171013, GCP(this.linuxRi('us-central1', 'convertible', 3, 'partial_upfront'), "n1-standard-8"), 0.00001)
+            t.areClose(0.123, GCP(this.linuxRi('us-central1', 'standard', 1, 'no_upfront'), "n1-highcpu-8"), 0.00001)
+            // t.areClose(0.114498, EC2(this.linuxRi('us-east-1', 'standard', 1, 'all_upfront'), "m5.xlarge"), 0.00001)
+            // t.areClose(0.073706, EC2(this.linuxRi('us-east-1', 'standard', 3, 'all_upfront'), "m5.xlarge"), 0.00001)
 
-        //     t.areClose(0.099201, EC2(this.linuxRi('us-west-1', 'standard', 3, 'all_upfront'), "m5.xlarge"), 0.00001)
-        // })
+            // t.areClose(0.099201, EC2(this.linuxRi('us-west-1', 'standard', 3, 'all_upfront'), "m5.xlarge"), 0.00001)
+        })
 
         // t.describe("EC2 RI functions", () => {
         //     t.areClose(0.131621, EC2_LINUX_CONV_RI_ALL("m5.xlarge", "us-east-1", "1"), 0.00001)
@@ -85,22 +85,22 @@ export class GCPFunctionTestSuite extends TestSuite {
         // })
     }
 
-    // private linuxRi(region: string, offeringClass: string, term: number, paymentOption: string) {
-    //     return this.ri(region, 'linux',offeringClass, term, paymentOption)
-    // }
+    private linuxRi(region: string, offeringClass: string, term: number, paymentOption: string) {
+        return this.ri(region, 'linux',offeringClass, term, paymentOption)
+    }
 
-    // private ri(region: string, platform: string, offeringClass: string, term: number, paymentOption: string) {
-    //     return this.settings(region, platform, 'reserved', offeringClass, term, paymentOption)
-    // }
+    private ri(region: string, platform: string, offeringClass: string, term: number, paymentOption: string) {
+        return this.settings(region, platform, 'reserved', offeringClass, term, paymentOption)
+    }
 
-    // private settings(region: string, platform: string, purchaseType: string, offeringClass: string, term: number, paymentOption: string) {
-    //     return [
-    //         ['region', region],
-    //         ['platform', platform],
-    //         ['purchase_type', purchaseType],
-    //         ['offering_class', offeringClass],
-    //         ['purchase_term', term.toString()],
-    //         ['payment_option', paymentOption]
-    //     ]
-    // }
+    private settings(region: string, platform: string, purchaseType: string, offeringClass: string, term: number, paymentOption: string) {
+        return [
+            ['region', region],
+            ['platform', platform],
+            ['purchase_type', purchaseType],
+            ['offering_class', offeringClass],
+            ['purchase_term', term.toString()],
+            ['payment_option', paymentOption]
+        ]
+    }
 }

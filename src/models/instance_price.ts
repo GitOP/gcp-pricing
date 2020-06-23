@@ -1,7 +1,12 @@
 export class InstancePrice {
     constructor(private readonly price: any, private readonly reserved: boolean) {
     }
+    
+    getPrice() : any {
+        return this.price
+    }
 
+    // RS: Only valid for AWS
     // TODO: manage conversion to different durations
     unitPrice(): number {
         if (this.reserved) {

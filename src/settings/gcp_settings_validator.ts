@@ -15,7 +15,7 @@ export class GCPSettingsValidator extends SettingsValidator {
             return [ret, msg]
         }
 
-        let riOpts = [SettingKeys.OfferingClass, SettingKeys.PurchaseTerm, SettingKeys.PaymentOption]
+        let riOpts = [SettingKeys.PurchaseTerm]
         if (this.get(SettingKeys.PurchaseType) === "reserved") {            
             [ret, msg] = this.verifyOptions(riOpts)
             if (!ret) {

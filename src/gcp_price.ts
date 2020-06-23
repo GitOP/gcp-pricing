@@ -17,7 +17,7 @@ export class GCPPrice {
         let instPrice = this.gcpGetPrice(this.instance, this.setting(SettingKeys.Region),
             this.setting(SettingKeys.PurchaseType), this.platformType())
 
-        return instPrice.unitPrice()
+        return instPrice.getPrice()
     }
 
     private platformType(): GCPPlatformType {
@@ -33,44 +33,22 @@ export class GCPPrice {
 
     private gcpGetPrice(instance: GCPInstance, region: string, purchaseType: string, platform: GCPPlatformType): InstancePrice {
         let pricePath = null
-        let inst = null
-
-        let serviceId = null
+        let instPrice = null
         if (this.isReserved()) {
-            // pricePath = Utilities.formatString('-%s-CUD-%s-%s-YEAR-',this.instance.getInstanceSeries(),this.setting(SettingKeys.PurchaseTerm))
+            pricePath = Utilities.formatString('%s-%s-CUD-%s-',instance.getServiceName(), instance.getInstanceSeries(),this.purchaseTermAttr())
+            let memoryPrice = parseFloat(ctxt().gcpServiceList.services[pricePath + "RAM"][region])
+            let corePrice = parseFloat(ctxt().gcpServiceList.services[pricePath + "CPU"][region])
+            instPrice = memoryPrice * Number(instance.getMem()) + corePrice * Number(instance.getCores())
         } else {
-            serviceId = instance.getServiceName() + "-VMIMAGE-" + instance.getInstanceType()
-            inst = ctxt().gcpServiceList.services[serviceId][region]
-            Logger.log(inst);            
+            pricePath = instance.getServiceName() + "-VMIMAGE-" + instance.getInstanceType()
+            instPrice = ctxt().gcpServiceList.services[pricePath][region]            
+            //Logger.log(inst);
         }
-        // insts = this.filterReserved(prices)
-        // insts = this.filterOnDemand(prices)
-
-        // if (inst.length > 1) {
-        //     throw `Found too many instances that matched ${this.instance.getInstanceType()}`
-        // }
-        // if (inst.length == 0) {
-        //     throw `Can not find instance type ${instance.getInstanceType()} of ${GCPPlatform.typeToString(platform)} in ${region}`
-        // }
-
-        if (inst == null) {
+        if (instPrice == null) {
             throw `Can not find instance type ${instance.getInstanceType()} of ${GCPPlatform.typeToString(platform)} in ${region}`
         }
         
-        return new InstancePrice(inst, this.isReserved())
-    }
-
-    private loadPriceData(pricePath: string) {
-        let body: string
-        
-        if (this.isReserved()) {
-            body = ctxt().gcpDataLoader.loadPath(pricePath, this.tranformReserved)
-        } else {
-            body = ctxt().gcpDataLoader.loadPath(pricePath)
-        }
-
-        let resp = JSON.parse(body)
-        return resp.prices
+        return new InstancePrice(instPrice, this.isReserved())
     }
 
     private isReserved(): boolean {
@@ -79,53 +57,6 @@ export class GCPPrice {
 
     private setting(name: SettingKeys): string {
         return this.settings.get(name)
-    }
-
-    private purchaseTypeToUri(purchaseType: string): string {
-        return purchaseType === "ondemand" ? "ondemand" : "reserved-instance"
-    }
-
-    private filterReserved(prices) {
-        return prices.filter(price => {
-            return price.attributes['aws:ec2:instanceType'] === this.instance.getInstanceType() &&
-                price.attributes['aws:offerTermOfferingClass'] === this.setting(SettingKeys.OfferingClass) &&
-                price.attributes['aws:offerTermPurchaseOption'] === this.paymentOptionAttr() &&
-                price.attributes['aws:offerTermLeaseLength'] === this.purchaseTermAttr()
-        })
-    }
-
-    private filterOnDemand(prices) {
-        return prices.filter(price => {
-            return price.attributes['aws:ec2:instanceType'] === this.instance.getInstanceType()
-        })
-    }
-
-    // The full RI payload is too large to cache, so reduce to only required attributes
-    private tranformReserved(data: string): string {
-        let ret: any = {}
-
-        let json = JSON.parse(data)
-
-        ret.metadata = json.metadata
-        ret.prices = []
-
-        for (let price of json.prices) {
-            let n: any = {}
-
-            n.id = price.id
-            n.price = price.price
-            n.unit = price.unit
-
-            n.attributes = Utils.slice(price.attributes,
-                ["aws:ec2:instanceType", "aws:offerTermLeaseLength",
-                "aws:offerTermOfferingClass", "aws:offerTermPurchaseOption"])
-            n.calculatedPrice = Utils.slice(price.calculatedPrice, 
-                ["effectiveHourlyRate", "upfrontRate"])
-
-            ret.prices.push(n)
-        }
-
-        return JSON.stringify(ret)
     }
 
     private paymentOptionAttr(): string {
@@ -143,6 +74,6 @@ export class GCPPrice {
     }
 
     private purchaseTermAttr(): string {
-        return Utilities.formatString('%syr', this.setting(SettingKeys.PurchaseTerm))
+        return Utilities.formatString('%s-YEAR', this.setting(SettingKeys.PurchaseTerm))
     }
 }
